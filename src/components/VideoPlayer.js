@@ -1,6 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Video from 'react-native-video';
+import { connect } from 'react-redux';
+
+import * as actions from '../actions';
 
 const FORWARD_DURATION = 7;
 class VideoPlayer extends Component {
@@ -57,8 +60,12 @@ class VideoPlayer extends Component {
         this.videoPlayer.seek(newTime);
     }
 
+    componentDidUpdate() {
+
+    }
+
     render() {
-        const { onClosePressed, video, volume } = this.props;
+        const { onClosePressed, video, volume, updateVideoTime } = this.props;
         const { currentTime, duration, paused } = this.state;
         const completedPercentage = this.getCurrentTimePercentage(currentTime, duration) * 100;
         return (<View style={styles.fullScreen} key={this.state.key}>
@@ -75,7 +82,9 @@ style={styles.videoView}
 ref={videoPlayer => this.videoPlayer = videoPlayer}
                        onEnd={this.onVideoEnd.bind(this)}
                        onLoad={this.onVideoLoad.bind(this)}
-                       onProgress={this.onProgress.bind(this)}
+                       onProgress={(e) => {
+                           updateVideoTime(e.currentTime);
+                       }}
                        source={{ uri: 'https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/fileSequence0.ts' }}
                        paused={paused}
                        volume={Math.max(Math.min(1, volume), 0)}
@@ -128,10 +137,14 @@ let styles = StyleSheet.create({
     }
 });
 
+const mapStateToProps = state => {
+  return { };
+};
+
 VideoPlayer.propTypes = {
     video: PropTypes.object.isRequired,
     volume: PropTypes.number,
     onClosePressed: PropTypes.func.isRequired
 };
 
-export default VideoPlayer;
+export default connect(mapStateToProps, actions)(VideoPlayer);

@@ -8,17 +8,22 @@ import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  Text,
   View
 } from 'react-native';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+
+import reducers from './src/reducers';
 import VideoPlayer from './src/components/VideoPlayer';
 
 export default class AwesomeProject extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <VideoPlayer video={{ uri: 'broadchurch' }} volume={0.5} onClosePressed={() => {}} />
-      </View>
+      <Provider store={createStore(reducers)}>
+        <View style={styles.container}>
+          <VideoPlayer video={{ uri: 'broadchurch' }} volume={0.5} onClosePressed={() => {}} />
+        </View>
+      </Provider>
     );
   }
 }

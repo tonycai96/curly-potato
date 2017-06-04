@@ -11,21 +11,13 @@ import {
   Text,
   View
 } from 'react-native';
+import VideoPlayer from './src/components/VideoPlayer';
 
 export default class AwesomeProject extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
+        <VideoPlayer video={{ uri: 'broadchurch' }} volume={0.5} onClosePressed={() => {}} />
       </View>
     );
   }
@@ -34,8 +26,6 @@ export default class AwesomeProject extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
   welcome: {

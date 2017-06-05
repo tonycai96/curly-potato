@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View, Button } from 'react-native';
 import Video from 'react-native-video';
 import { connect } from 'react-redux';
 
@@ -60,13 +60,21 @@ class VideoPlayer extends Component {
         this.videoPlayer.seek(newTime);
     }
 
-    componentDidUpdate() {
-
+    componentDidUpdate(prevProps) {
+        console.log(this.props.activeVideo);
+        const { seekAmount } = this.props.activeVideo;
+        const { resetSeek } = this.props;
+        if (seekAmount) {
+            resetSeek();
+            this.videoPlayer.seek(seekAmount);
+        }
     }
 
     render() {
-        const { onClosePressed, video, volume, updateVideoTime } = this.props;
-        const { currentTime, duration, paused } = this.state;
+        const { onClosePressed, video, volume } = this.props;
+        const { updateVideoTime, pauseOrPlayVideo, togglePlayHighlightMode } = this.props;
+        const { paused } = this.props.activeVideo;
+        const { currentTime, duration } = this.state;
         const completedPercentage = this.getCurrentTimePercentage(currentTime, duration) * 100;
         return (<View style={styles.fullScreen} key={this.state.key}>
             <View style={[styles.cancelButton]}>
@@ -74,9 +82,16 @@ class VideoPlayer extends Component {
                     <Image source={require('../../assets/images/close.png')} />
                 </TouchableOpacity>
             </View>
+            <View>
+                <Button 
+                    onPress={() => togglePlayHighlightMode()}
+                    title="Toggle Play Highlight Mode"
+                    color="#841584"
+                />
+            </View>
             <TouchableOpacity
 style={styles.videoView}
-                         onPress={this.playOrPauseVideo.bind(this, paused)}
+                         onPress={() => pauseOrPlayVideo()}
             >
                 <Video
 ref={videoPlayer => this.videoPlayer = videoPlayer}
@@ -138,7 +153,9 @@ let styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  return { };
+  return {
+    activeVideo: state.activeVideo
+  };
 };
 
 VideoPlayer.propTypes = {
